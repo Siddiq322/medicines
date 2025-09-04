@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MediGuide — Know Your Medicines</title>
+  <meta name="description" content="A simple, educational website about common medicines: uses, dosage, side effects, and safety tips." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f172a;          /* slate-900 */
+      --panel:#0b1227;       /* deeper slate */
+      --card:#0b1938;        /* blue-900-ish */
+      --muted:#cbd5e1;       /* slate-300 */
+      --text:#e2e8f0;        /* slate-200 */
+      --brand:#60a5fa;       /* blue-400 */
+      --brand-2:#34d399;     /* emerald-400 */
+      --warning:#f59e0b;     /* amber-500 */
+      --danger:#fb7185;      /* rose-400 */
+      --radius:18px;
+      --shadow:0 10px 30px rgba(2,6,23,.45);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text); background: radial-gradient(1200px 600px at 20% -10%, #1e293b 10%, transparent 60%),
+                         radial-gradient(1200px 600px at 120% 10%, #0b234a 10%, transparent 60%),
+                         var(--bg);
+      line-height:1.6;
+    }
+    a{color:var(--brand); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .container{max-width:1100px; margin:0 auto; padding:0 20px}
+    header{
+      position:sticky; top:0; z-index:50; backdrop-filter: blur(12px);
+      background:linear-gradient(180deg, rgba(15,23,42,.85), rgba(15,23,42,.55));
+      border-bottom:1px solid rgba(148,163,184,.15);
+    }
+    .nav{display:flex; align-items:center; justify-content:space-between; padding:14px 0}
+    .brand{display:flex; gap:10px; align-items:center; font-weight:700; letter-spacing:.3px}
+    .logo{width:34px; height:34px; display:grid; place-items:center; border-radius:12px; background:linear-gradient(135deg, var(--brand), var(--brand-2)); box-shadow:var(--shadow)}
+    .nav a{margin-left:18px; font-weight:600; color:var(--muted)}
+    .nav a:hover{color:#fff}
+
+    .hero{padding:56px 0 30px}
+    .hero h1{font-size:clamp(28px, 4vw, 44px); line-height:1.2; margin:.2em 0}
+    .hero p{color:var(--muted); max-width:800px}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(96,165,250,.12); border:1px solid rgba(96,165,250,.3);
+      color:var(--brand); padding:6px 12px; border-radius:999px; font-weight:600; font-size:14px
+    }
+
+    .searchbar{margin:26px 0 6px; display:flex; gap:10px; align-items:center}
+    .searchbar input{
+      flex:1; padding:14px 16px; border-radius:12px; border:1px solid rgba(148,163,184,.25);
+      background: rgba(2,6,23,.55); color:var(--text); outline:none;
+    }
+    .searchbar input::placeholder{color:#94a3b8}
+    .searchbar button{
+      padding:12px 16px; border-radius:12px; border:1px solid rgba(148,163,184,.25);
+      background:linear-gradient(135deg, rgba(96,165,250,.2), rgba(52,211,153,.2));
+      color:#fff; font-weight:700; cursor:pointer
+    }
+
+    .grid{display:grid; gap:18px; grid-template-columns:repeat(1, minmax(0,1fr)); margin:16px 0 32px}
+    @media (min-width:700px){ .grid{grid-template-columns:repeat(2, minmax(0,1fr));} }
+    @media (min-width:1024px){ .grid{grid-template-columns:repeat(3, minmax(0,1fr));} }
+
+    .card{
+      background:linear-gradient(180deg, rgba(11,25,56,.92), rgba(11,25,56,.7));
+      border:1px solid rgba(148,163,184,.15); border-radius:var(--radius); box-shadow:var(--shadow);
+      padding:18px; display:flex; flex-direction:column; gap:10px;
+    }
+    .badge{font-size:12px; font-weight:700; color:#0f172a; background:linear-gradient(135deg, var(--brand), var(--brand-2)); border-radius:999px; padding:4px 10px; display:inline-block}
+    .card h3{margin:.2em 0 .1em; font-size:20px}
+    .card p{color:var(--muted); font-size:14px; margin:0}
+    .kv{display:flex; flex-wrap:wrap; gap:10px; margin-top:6px}
+    .kv span{font-size:12px; color:var(--muted); background:rgba(148,163,184,.08); border:1px solid rgba(148,163,184,.15); padding:6px 10px; border-radius:10px}
+
+    section{padding:24px 0}
+    .section-title{font-size:22px; margin-bottom:8px}
+    .panel{background:linear-gradient(180deg, rgba(11,18,39,.9), rgba(11,18,39,.7)); border:1px solid rgba(148,163,184,.15); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px}
+    ul{margin:0; padding-left:18px}
+    li{margin:6px 0}
+
+    footer{
+      margin-top:30px; border-top:1px solid rgba(148,163,184,.15); color:var(--muted);
+      padding:26px 0 50px; font-size:14px
+    }
+    .disclaimer{display:flex; gap:10px; align-items:flex-start; background:rgba(251,113,133,.08); border:1px dashed rgba(251,113,133,.5); color:#fecaca; padding:12px 14px; border-radius:12px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav" role="navigation" aria-label="Main">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">💊</div>
+        <span>MediGuide</span>
+      </div>
+      <nav>
+        <a href="#meds">Medicines</a>
+        <a href="#safety">Safety</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero" aria-labelledby="title">
+      <span class="pill">Educational • Not medical advice</span>
+      <h1 id="title">Understand common medicines—uses, dosage & safety</h1>
+      <p>Explore quick facts about frequently used medicines. Always consult a qualified healthcare professional before starting, stopping, or changing any medication.</p>
+
+      <div class="searchbar" role="search">
+        <input id="search" type="search" placeholder="Search medicines (e.g., Paracetamol, Ibuprofen, Amoxicillin)" aria-label="Search medicines" />
+        <button id="clearBtn" type="button" title="Clear search">Clear</button>
+      </div>
+    </section>
+
+    <section id="meds" aria-labelledby="meds-title">
+      <h2 class="section-title" id="meds-title">Common Medicines</h2>
+      <div class="grid" id="cards" aria-live="polite"></div>
+    </section>
+
+    <section id="safety" aria-labelledby="safety-title">
+      <h2 class="section-title" id="safety-title">Medicine Safety Tips</h2>
+      <div class="panel">
+        <ul>
+          <li><strong>Read labels carefully:</strong> Check active ingredients, strength, and instructions.</li>
+          <li><strong>Avoid duplicate ingredients:</strong> Many cold/flu remedies already contain painkillers like paracetamol.</li>
+          <li><strong>Mind allergies & interactions:</strong> Tell your clinician/pharmacist about all medicines and supplements you take.</li>
+          <li><strong>Use the right dose:</strong> Dosage depends on age, weight, condition, and formulation. Follow professional advice.</li>
+          <li><strong>Special populations:</strong> Pregnancy, breastfeeding, children, elderly, and those with kidney/liver issues need extra caution.</li>
+          <li><strong>Storage:</strong> Keep in original packs, away from heat, moisture, and out of children’s reach.</li>
+        </ul>
+        <div class="disclaimer" role="note" aria-label="Disclaimer">
+          ⚠️ <span><strong>Disclaimer:</strong> This site is for general education only and is not a substitute for professional medical advice, diagnosis, or treatment.</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" aria-labelledby="faq-title">
+      <h2 class="section-title" id="faq-title">Frequently Asked Questions</h2>
+      <div class="panel">
+        <p><strong>Can I combine painkillers?</strong> Some combinations are safe while others are not. For example, paracetamol and ibuprofen may be used together in certain cases, but you should confirm with a healthcare professional based on your health status.</p>
+        <p><strong>Antibiotics for colds?</strong> Colds are usually viral. Antibiotics (like amoxicillin) don’t treat viruses and should only be used when prescribed.</p>
+        <p><strong>What if I miss a dose?</strong> In many cases, take it when you remember unless it’s near your next dose—never double up. Check the patient information leaflet or consult a professional.</p>
+      </div>
+    </section>
+
+    <section id="contact" aria-labelledby="contact-title">
+      <h2 class="section-title" id="contact-title">Contact</h2>
+      <div class="panel">
+        <p>For medical questions, contact your local pharmacist or healthcare provider. For feedback about this demo site, email <a href="mailto:hello@mediguide.example">hello@mediguide.example</a>.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> MediGuide. Educational content only.</p>
+    </div>
+  </footer>
+
+  <script>
+    const medicines = [
+      {
+        name: "Paracetamol (Acetaminophen)",
+        category: "Analgesic • Antipyretic",
+        uses: "Fever, mild to moderate pain (headache, toothache, body aches)",
+        dose: "Varies by age/weight and formulation. Typical adult dose often 500–650 mg per dose with max daily limits. Follow label/doctor.",
+        side: "Nausea, rash (rare). Overdose can seriously harm the liver.",
+        tags: ["fever","pain","OTC"]
+      },
+      {
+        name: "Ibuprofen",
+        category: "NSAID (Non‑steroidal anti‑inflammatory)",
+        uses: "Pain with inflammation (sprains, cramps), fever",
+        dose: "Follow pack/prescriber. Take with food/water. Avoid if history of ulcers, kidney issues, or certain heart conditions unless advised.",
+        side: "Stomach upset, heartburn; rare GI bleeding, kidney effects.",
+        tags: ["pain","inflammation","OTC"]
+      },
+      {
+        name: "Amoxicillin",
+        category: "Antibiotic (Penicillin class)",
+        uses: "Bacterial infections as prescribed",
+        dose: "By prescription only. Complete the full course even if you feel better.",
+        side: "Rash, diarrhea; allergic reactions possible.",
+        tags: ["antibiotic","Rx"]
+      },
+      {
+        name: "Cetirizine",
+        category: "Antihistamine",
+        uses: "Allergic rhinitis, sneezing, itching, hives",
+        dose: "Usually once daily; may cause drowsiness in some.",
+        side: "Drowsiness, dry mouth (less than older antihistamines).",
+        tags: ["allergy","OTC"]
+      },
+      {
+        name: "Omeprazole",
+        category: "Proton pump inhibitor (PPI)",
+        uses: "Acid reflux, gastritis, ulcers",
+        dose: "Short courses OTC in some places; longer use under medical guidance.",
+        side: "Headache, abdominal pain; long‑term use has specific risks.",
+        tags: ["acid","stomach","OTC","Rx"]
+      },
+      {
+        name: "ORS (Oral Rehydration Salts)",
+        category: "Electrolyte solution",
+        uses: "Dehydration from diarrhea/vomiting/heat",
+        dose: "Mix as directed; sip frequently. Seek help for severe dehydration.",
+        side: "Generally safe if prepared correctly.",
+        tags: ["rehydration","OTC"]
+      }
+    ];
+
+    const cardsEl = document.getElementById('cards');
+    const searchEl = document.getElementById('search');
+    const clearBtn = document.getElementById('clearBtn');
+    const yearEl = document.getElementById('year');
+
+    function tagPills(tags){
+      return `<div class="kv">${tags.map(t=>`<span>#${t}</span>`).join('')}</div>`
+    }
+
+    function render(list){
+      if(!list.length){
+        cardsEl.innerHTML = `<div class="panel">No medicines found. Try a different search.</div>`;
+        return;
+      }
+      cardsEl.innerHTML = list.map(m=>`
+        <article class="card" tabindex="0" aria-label="${m.name}">
+          <span class="badge">${m.category}</span>
+          <h3>${m.name}</h3>
+          <p><strong>Uses:</strong> ${m.uses}</p>
+          <p><strong>Typical guidance:</strong> ${m.dose}</p>
+          <p><strong>Possible side effects:</strong> ${m.side}</p>
+          ${tagPills(m.tags)}
+        </article>
+      `).join('');
+    }
+
+    function filter(){
+      const q = searchEl.value.trim().toLowerCase();
+      const out = medicines.filter(m =>
+        m.name.toLowerCase().includes(q) ||
+        m.category.toLowerCase().includes(q) ||
+        m.uses.toLowerCase().includes(q) ||
+        m.tags.some(t=>t.toLowerCase().includes(q))
+      );
+      render(out);
+    }
+
+    searchEl.addEventListener('input', filter);
+    clearBtn.addEventListener('click', ()=>{ searchEl.value=''; filter(); searchEl.focus(); });
+
+    // initial
+    yearEl.textContent = new Date().getFullYear();
+    render(medicines);
+  </script>
+</body>
+</html>
